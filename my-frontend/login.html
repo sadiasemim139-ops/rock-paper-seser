@@ -1,0 +1,383 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login - Sign In to Your Account</title>
+    <meta name="description" content="Securely sign in to your account.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap"
+        rel="stylesheet">
+    <style>
+        :root {
+            --bg-main: #090a0f;
+            --bg-card: #15161e;
+            --bg-input: #111218;
+            --border-color: #22242f;
+            --border-focus: #8b5cf6;
+            --text-primary: #ffffff;
+            --text-secondary: #858b9c;
+            --text-muted: #5f6677;
+            --color-purple: #8b5cf6;
+            --gradient-primary: linear-gradient(90deg, #d946ef 0%, #8b5cf6 100%);
+            --transition: all 0.2s ease-in-out;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        body {
+            background-color: var(--bg-main);
+            color: var(--text-primary);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 24px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        /* Decorative background orbs */
+        body::before {
+            content: '';
+            position: fixed;
+            top: -200px;
+            left: -200px;
+            width: 500px;
+            height: 500px;
+            background: radial-gradient(circle, rgba(139, 92, 246, 0.12) 0%, transparent 70%);
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        body::after {
+            content: '';
+            position: fixed;
+            bottom: -200px;
+            right: -200px;
+            width: 500px;
+            height: 500px;
+            background: radial-gradient(circle, rgba(217, 70, 239, 0.1) 0%, transparent 70%);
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        .login-card {
+            background-color: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 20px;
+            padding: 40px;
+            width: 100%;
+            max-width: 420px;
+            position: relative;
+            z-index: 1;
+            animation: slideUp 0.5s ease-out;
+        }
+
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(24px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .logo-row {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 28px;
+        }
+
+        .logo-icon {
+            width: 36px;
+            height: 36px;
+            background: var(--gradient-primary);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 800;
+            font-size: 18px;
+            color: white;
+            flex-shrink: 0;
+        }
+
+        .logo-name {
+            font-size: 20px;
+            font-weight: 700;
+        }
+
+        h1 {
+            font-size: 26px;
+            font-weight: 800;
+            margin-bottom: 6px;
+            line-height: 1.2;
+        }
+
+        .subtitle {
+            color: var(--text-secondary);
+            font-size: 14px;
+            margin-bottom: 28px;
+        }
+
+        .form-group {
+            margin-bottom: 18px;
+        }
+
+        label {
+            display: block;
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--text-secondary);
+            margin-bottom: 8px;
+        }
+
+        input[type="email"],
+        input[type="password"] {
+            width: 100%;
+            background-color: var(--bg-input);
+            border: 1px solid var(--border-color);
+            border-radius: 10px;
+            padding: 12px 16px;
+            font-size: 14px;
+            color: var(--text-primary);
+            outline: none;
+            transition: var(--transition);
+        }
+
+        input[type="email"]:focus,
+        input[type="password"]:focus {
+            border-color: var(--border-focus);
+            box-shadow: 0 0 0 3px rgba(139, 92, 246, 0.15);
+        }
+
+        input::placeholder {
+            color: var(--text-muted);
+        }
+
+        .password-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 8px;
+        }
+
+        .forgot-link {
+            font-size: 12px;
+            color: #a78bfa;
+            text-decoration: none;
+            font-weight: 600;
+            transition: var(--transition);
+        }
+
+        .forgot-link:hover {
+            color: var(--color-purple);
+            text-decoration: underline;
+        }
+
+        .submit-btn {
+            width: 100%;
+            background: var(--gradient-primary);
+            border: none;
+            color: white;
+            padding: 14px;
+            border-radius: 10px;
+            font-size: 15px;
+            font-weight: 700;
+            cursor: pointer;
+            margin-top: 8px;
+            transition: var(--transition);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .submit-btn:hover {
+            opacity: 0.92;
+            box-shadow: 0 0 20px rgba(139, 92, 246, 0.35);
+            transform: translateY(-1px);
+        }
+
+        .submit-btn:active {
+            transform: translateY(0);
+        }
+
+        .submit-btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .divider {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin: 22px 0;
+            color: var(--text-muted);
+            font-size: 12px;
+        }
+
+        .divider::before,
+        .divider::after {
+            content: '';
+            flex: 1;
+            height: 1px;
+            background-color: var(--border-color);
+        }
+
+        .signup-row {
+            text-align: center;
+            font-size: 13px;
+            color: var(--text-secondary);
+        }
+
+        .signup-row a {
+            color: #a78bfa;
+            text-decoration: none;
+            font-weight: 600;
+            transition: var(--transition);
+        }
+
+        .signup-row a:hover {
+            text-decoration: underline;
+        }
+
+        /* Status message */
+        .status-msg {
+            display: none;
+            padding: 10px 14px;
+            border-radius: 8px;
+            font-size: 13px;
+            font-weight: 600;
+            margin-bottom: 16px;
+            animation: fadeIn 0.3s ease;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+
+            to {
+                opacity: 1;
+            }
+        }
+
+        .status-msg.success {
+            background-color: rgba(16, 185, 129, 0.12);
+            border: 1px solid rgba(16, 185, 129, 0.3);
+            color: #34d399;
+            display: block;
+        }
+
+        .status-msg.error {
+            background-color: rgba(239, 68, 68, 0.12);
+            border: 1px solid rgba(239, 68, 68, 0.3);
+            color: #f87171;
+            display: block;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="login-card">
+        <!-- Logo -->
+        <div class="logo-row">
+            <div class="logo-icon">A</div>
+            <span class="logo-name">MyApp</span>
+        </div>
+
+        <!-- Heading -->
+        <h1>Welcome back</h1>
+        <p class="subtitle">Sign in to continue to your account.</p>
+
+        <!-- Status Message -->
+        <div class="status-msg" id="status-msg"></div>
+
+        <!-- Login Form -->
+        <form id="login-form" novalidate>
+            <div class="form-group">
+                <label for="email">Email Address</label>
+                <input type="email" id="email" name="email" placeholder="you@example.com" autocomplete="email"
+                    required>
+            </div>
+
+            <div class="form-group">
+                <div class="password-row">
+                    <label for="password">Password</label>
+                    <a href="#" class="forgot-link">Forgot password?</a>
+                </div>
+                <input type="password" id="password" name="password" placeholder="Enter your password"
+                    autocomplete="current-password" required>
+            </div>
+
+            <button type="submit" class="submit-btn" id="submit-btn">Sign In</button>
+        </form>
+
+        <div class="divider">or</div>
+
+        <div class="signup-row">
+            Don't have an account? <a href="#">Create one</a>
+        </div>
+    </div>
+
+    <script>
+        const form = document.getElementById('login-form');
+        const submitBtn = document.getElementById('submit-btn');
+        const statusMsg = document.getElementById('status-msg');
+
+        function showStatus(message, type) {
+            statusMsg.textContent = message;
+            statusMsg.className = `status-msg ${type}`;
+        }
+
+        form.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const email = document.getElementById('email').value.trim();
+            const password = document.getElementById('password').value;
+
+            if (!email || !password) {
+                showStatus('Please fill in all fields.', 'error');
+                return;
+            }
+
+            submitBtn.disabled = true;
+            submitBtn.textContent = 'Signing in...';
+
+            try {
+                const response = await fetch('http://localhost:3000/login', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ email, password })
+                });
+
+                const data = await response.json();
+
+                if (response.ok) {
+                    showStatus(`Welcome back, ${data.user?.name || email}! Redirecting...`, 'success');
+                } else {
+                    showStatus(data.message || 'Invalid credentials. Please try again.', 'error');
+                }
+            } catch (err) {
+                showStatus('Cannot reach the server. Make sure login-server.js is running.', 'error');
+            } finally {
+                submitBtn.disabled = false;
+                submitBtn.textContent = 'Sign In';
+            }
+        });
+    </script>
+</body>
+
+</html>

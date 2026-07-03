@@ -1,0 +1,453 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dhaka Live Weather</title>
+    <meta name="description" content="Live current weather conditions for Dhaka, Bangladesh.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap"
+        rel="stylesheet">
+    <style>
+        :root {
+            --bg: #0b1120;
+            --card: #141c2e;
+            --card2: #1a2338;
+            --border: #1f2d47;
+            --text: #f0f6ff;
+            --muted: #6b7fa3;
+            --accent: #3b82f6;
+            --gradient: linear-gradient(135deg, #1d4ed8 0%, #7c3aed 100%);
+            --transition: all 0.3s ease;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Plus Jakarta Sans', sans-serif;
+        }
+
+        body {
+            background-color: var(--bg);
+            color: var(--text);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 24px;
+        }
+
+        /* Background glow */
+        body::before {
+            content: '';
+            position: fixed;
+            top: -150px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 600px;
+            height: 400px;
+            background: radial-gradient(ellipse, rgba(59, 130, 246, 0.1) 0%, transparent 70%);
+            pointer-events: none;
+        }
+
+        .weather-card {
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 24px;
+            width: 100%;
+            max-width: 480px;
+            overflow: hidden;
+            box-shadow: 0 25px 60px rgba(0, 0, 0, 0.5);
+            animation: fadeUp 0.6s ease-out;
+        }
+
+        @keyframes fadeUp {
+            from { opacity: 0; transform: translateY(20px); }
+            to   { opacity: 1; transform: translateY(0); }
+        }
+
+        /* ── Header ── */
+        .card-header {
+            background: var(--gradient);
+            padding: 28px 28px 24px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .card-header::after {
+            content: '';
+            position: absolute;
+            top: -60px;
+            right: -60px;
+            width: 200px;
+            height: 200px;
+            background: rgba(255,255,255,0.05);
+            border-radius: 50%;
+        }
+
+        .location-row {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 14px;
+            font-weight: 600;
+            opacity: 0.9;
+            margin-bottom: 16px;
+        }
+
+        .location-row svg { width: 16px; height: 16px; flex-shrink: 0; }
+
+        .main-temp {
+            display: flex;
+            align-items: flex-start;
+            gap: 20px;
+        }
+
+        .temp-value {
+            font-size: 72px;
+            font-weight: 800;
+            line-height: 1;
+            letter-spacing: -3px;
+        }
+
+        .temp-unit { font-size: 28px; font-weight: 600; margin-top: 10px; opacity: 0.8; }
+
+        .weather-desc-col {
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-end;
+            padding-bottom: 6px;
+        }
+
+        .weather-icon { font-size: 42px; line-height: 1; }
+
+        .weather-desc {
+            font-size: 15px;
+            font-weight: 600;
+            opacity: 0.9;
+            margin-top: 4px;
+        }
+
+        .feels-like {
+            margin-top: 14px;
+            font-size: 13px;
+            opacity: 0.75;
+            font-weight: 500;
+        }
+
+        /* ── Stats grid ── */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1px;
+            background-color: var(--border);
+            border-top: 1px solid var(--border);
+        }
+
+        .stat-cell {
+            background: var(--card);
+            padding: 20px 22px;
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+            transition: var(--transition);
+        }
+
+        .stat-cell:hover { background: var(--card2); }
+
+        .stat-label {
+            font-size: 11px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.8px;
+            color: var(--muted);
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .stat-label svg { width: 14px; height: 14px; }
+
+        .stat-value {
+            font-size: 24px;
+            font-weight: 800;
+            color: var(--text);
+        }
+
+        .stat-unit { font-size: 13px; font-weight: 500; color: var(--muted); }
+
+        /* ── Footer ── */
+        .card-footer {
+            background: var(--card2);
+            border-top: 1px solid var(--border);
+            padding: 14px 22px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 12px;
+            color: var(--muted);
+        }
+
+        .source-link {
+            color: var(--accent);
+            text-decoration: none;
+            font-weight: 600;
+        }
+
+        .source-link:hover { text-decoration: underline; }
+
+        .refresh-btn {
+            background: rgba(59,130,246,0.12);
+            border: 1px solid rgba(59,130,246,0.25);
+            color: #60a5fa;
+            padding: 6px 14px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .refresh-btn:hover {
+            background: rgba(59,130,246,0.2);
+            border-color: rgba(59,130,246,0.4);
+        }
+
+        .refresh-btn.loading svg { animation: spin 0.8s linear infinite; }
+
+        @keyframes spin {
+            from { transform: rotate(0deg); }
+            to   { transform: rotate(360deg); }
+        }
+
+        /* ── Loading / Error states ── */
+        .skeleton {
+            background: linear-gradient(90deg, var(--card2) 25%, #1f2d47 50%, var(--card2) 75%);
+            background-size: 200% 100%;
+            animation: shimmer 1.2s infinite;
+            border-radius: 6px;
+            color: transparent;
+        }
+
+        @keyframes shimmer {
+            from { background-position: 200% 0; }
+            to   { background-position: -200% 0; }
+        }
+
+        .error-banner {
+            background: rgba(239,68,68,0.1);
+            border: 1px solid rgba(239,68,68,0.25);
+            color: #f87171;
+            padding: 14px 20px;
+            border-radius: 10px;
+            font-size: 13px;
+            font-weight: 600;
+            margin-top: 16px;
+            max-width: 480px;
+            text-align: center;
+            display: none;
+        }
+
+        @media (max-width: 400px) {
+            .temp-value { font-size: 56px; }
+            .card-header { padding: 20px; }
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="weather-card" id="weather-card">
+        <!-- Header -->
+        <div class="card-header">
+            <div class="location-row">
+                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/>
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/>
+                </svg>
+                <span id="location-name">Dhaka, Bangladesh</span>
+            </div>
+
+            <div class="main-temp">
+                <div>
+                    <div style="display:flex; align-items:flex-start;">
+                        <span class="temp-value" id="temp">--</span>
+                        <span class="temp-unit">°C</span>
+                    </div>
+                    <div class="feels-like" id="feels-like">Feels like --°C</div>
+                </div>
+                <div class="weather-desc-col">
+                    <div class="weather-icon" id="weather-icon">⏳</div>
+                    <div class="weather-desc" id="weather-desc">Loading…</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Stats -->
+        <div class="stats-grid">
+            <div class="stat-cell">
+                <div class="stat-label">
+                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M3 15a4 4 0 004 4h9a5 5 0 10-.1-9.999 5.002 5.002 0 10-9.78 2.096A4.001 4.001 0 003 15z"/>
+                    </svg>
+                    Humidity
+                </div>
+                <div>
+                    <span class="stat-value" id="humidity">--</span>
+                    <span class="stat-unit">%</span>
+                </div>
+            </div>
+
+            <div class="stat-cell">
+                <div class="stat-label">
+                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M14 5l7 7m0 0l-7 7m7-7H3"/>
+                    </svg>
+                    Wind Speed
+                </div>
+                <div>
+                    <span class="stat-value" id="wind">--</span>
+                    <span class="stat-unit">km/h</span>
+                </div>
+            </div>
+
+            <div class="stat-cell">
+                <div class="stat-label">
+                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M19 14l-7 7m0 0l-7-7m7 7V3"/>
+                    </svg>
+                    Precipitation
+                </div>
+                <div>
+                    <span class="stat-value" id="precip">--</span>
+                    <span class="stat-unit">mm</span>
+                </div>
+            </div>
+
+            <div class="stat-cell">
+                <div class="stat-label">
+                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                    </svg>
+                    Updated At
+                </div>
+                <div style="display:flex; align-items:baseline; gap:4px;">
+                    <span class="stat-value" style="font-size:16px;" id="updated-time">--:--</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Footer -->
+        <div class="card-footer">
+            <span>Data: <a class="source-link" href="https://open-meteo.com" target="_blank">Open-Meteo API</a> · Free &amp; No key needed</span>
+            <button class="refresh-btn" id="refresh-btn" onclick="fetchWeather()">
+                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" width="13" height="13">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5"
+                        d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/>
+                </svg>
+                Refresh
+            </button>
+        </div>
+    </div>
+
+    <div class="error-banner" id="error-banner"></div>
+
+    <script>
+        // ── Weather code → human-readable description & emoji ──────────────
+        const WMO_CODES = {
+            0:  { desc: 'Clear Sky',           icon: '☀️'  },
+            1:  { desc: 'Mainly Clear',         icon: '🌤️'  },
+            2:  { desc: 'Partly Cloudy',        icon: '⛅'  },
+            3:  { desc: 'Overcast',             icon: '☁️'  },
+            45: { desc: 'Foggy',               icon: '🌫️'  },
+            48: { desc: 'Icy Fog',             icon: '🌫️'  },
+            51: { desc: 'Light Drizzle',        icon: '🌦️'  },
+            53: { desc: 'Moderate Drizzle',     icon: '🌦️'  },
+            55: { desc: 'Heavy Drizzle',        icon: '🌧️'  },
+            61: { desc: 'Slight Rain',          icon: '🌧️'  },
+            63: { desc: 'Moderate Rain',        icon: '🌧️'  },
+            65: { desc: 'Heavy Rain',           icon: '🌧️'  },
+            71: { desc: 'Slight Snowfall',      icon: '🌨️'  },
+            73: { desc: 'Moderate Snowfall',    icon: '❄️'  },
+            75: { desc: 'Heavy Snowfall',       icon: '❄️'  },
+            80: { desc: 'Slight Showers',       icon: '🌦️'  },
+            81: { desc: 'Moderate Showers',     icon: '🌧️'  },
+            82: { desc: 'Heavy Showers',        icon: '⛈️'  },
+            95: { desc: 'Thunderstorm',         icon: '⛈️'  },
+            96: { desc: 'Thunderstorm + Hail',  icon: '⛈️'  },
+            99: { desc: 'Heavy Thunderstorm',   icon: '🌩️'  },
+        };
+
+        function getWeatherInfo(code) {
+            return WMO_CODES[code] || { desc: 'Unknown', icon: '🌡️' };
+        }
+
+        // ── Fetch live weather from Open-Meteo (no API key required) ───────
+        async function fetchWeather() {
+            const btn = document.getElementById('refresh-btn');
+            const errorBanner = document.getElementById('error-banner');
+            btn.classList.add('loading');
+            errorBanner.style.display = 'none';
+
+            // Dhaka coordinates
+            const LAT = 23.8103;
+            const LON = 90.4125;
+            const URL = `https://api.open-meteo.com/v1/forecast`
+                + `?latitude=${LAT}&longitude=${LON}`
+                + `&current=temperature_2m,apparent_temperature,relative_humidity_2m,wind_speed_10m,weather_code,precipitation`
+                + `&timezone=Asia%2FDhaka`;
+
+            try {
+                const response = await fetch(URL);
+                if (!response.ok) throw new Error(`HTTP ${response.status}`);
+
+                const data = await response.json();
+                const c    = data.current;
+
+                // ── Update the DOM ──────────────────────────────────────────
+                document.getElementById('temp').textContent        = Math.round(c.temperature_2m);
+                document.getElementById('feels-like').textContent  = `Feels like ${Math.round(c.apparent_temperature)}°C`;
+                document.getElementById('humidity').textContent    = c.relative_humidity_2m;
+                document.getElementById('wind').textContent        = c.wind_speed_10m.toFixed(1);
+                document.getElementById('precip').textContent      = c.precipitation.toFixed(1);
+
+                // Format time (e.g. "00:15" → "12:15 AM")
+                const [datePart, timePart] = c.time.split('T');
+                const [hh, mm] = timePart.split(':');
+                const hour = parseInt(hh);
+                const ampm = hour >= 12 ? 'PM' : 'AM';
+                const h12  = hour % 12 || 12;
+                document.getElementById('updated-time').textContent = `${h12}:${mm} ${ampm}`;
+
+                const { desc, icon } = getWeatherInfo(c.weather_code);
+                document.getElementById('weather-icon').textContent = icon;
+                document.getElementById('weather-desc').textContent = desc;
+
+            } catch (err) {
+                errorBanner.textContent = `⚠️ Could not fetch weather data: ${err.message}. Check your internet connection.`;
+                errorBanner.style.display = 'block';
+            } finally {
+                btn.classList.remove('loading');
+            }
+        }
+
+        // Fetch on page load
+        fetchWeather();
+    </script>
+
+</body>
+
+</html>
