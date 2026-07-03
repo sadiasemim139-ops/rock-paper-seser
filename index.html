@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rock Paper Scissors - পাথর কাগজ কাঁচি</title>
+    <meta name="description" content="A beautiful and modern Rock Paper Scissors game with Bengali localization.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;800&family=Noto+Sans+Bengali:wght@400;600;800&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+    <main class="game-container">
+        <header>
+            <h1>Rock Paper Scissors</h1>
+            <h2 class="subtitle">পাথর - কাগজ - কাঁচি</h2>
+        </header>
+
+        <div class="scoreboard">
+            <div class="score-card player-score">
+                <span class="label">You / আপনি</span>
+                <span class="score" id="player-score">0</span>
+            </div>
+            <div class="score-card computer-score">
+                <span class="label">Computer / কম্পিউটার</span>
+                <span class="score" id="computer-score">0</span>
+            </div>
+        </div>
+
+        <div class="result-display" id="result-display">
+            Make your move! / আপনার চাল দিন!
+        </div>
+
+        <div class="choices">
+            <button class="choice-btn" id="rock" aria-label="Rock">
+                <span class="emoji">✊</span>
+                <span class="text">Rock (পাথর)</span>
+            </button>
+            <button class="choice-btn" id="paper" aria-label="Paper">
+                <span class="emoji">✋</span>
+                <span class="text">Paper (কাগজ)</span>
+            </button>
+            <button class="choice-btn" id="scissors" aria-label="Scissors">
+                <span class="emoji">✌️</span>
+                <span class="text">Scissors (কাঁচি)</span>
+            </button>
+        </div>
+
+        <button id="reset-btn" class="reset-btn">Reset Game / নতুন করে শুরু করুন</button>
+    </main>
+    <script src="game.js"></script>
+</body>
+
+</html>
